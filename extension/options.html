@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Terminal settings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="options.css">
+</head><body>
+<main>
+  <h1>Terminal settings</h1>
+  <p class="hint">Changes are saved as you make them and apply to open terminal tabs right away.</p>
+  <form id="f" autocomplete="off">
+    <label>Color scheme
+      <select name="theme"><option value="auto">Automatic (classic black)</option></select></label>
+    <div id="preview" aria-hidden="true"><div id="sample">PS C:\&gt; <b>Get-ChildItem</b> <i>-Recurse</i></div><div id="chips"></div></div>
+    <label>Font family
+      <input name="fontFamily" spellcheck="false"></label>
+    <div class="row">
+      <label>Font size <input name="fontSize" type="number" min="8" max="40"></label>
+      <label>Scrollback lines <input name="scrollback" type="number" min="0" max="100000" step="1000"></label>
+    </div>
+    <label>Cursor
+      <select name="cursorStyle"><option value="block">Block</option><option value="bar">Bar</option><option value="underline">Underline</option></select></label>
+    <label class="check"><input name="cursorBlink" type="checkbox"> Blinking cursor</label>
+    <label class="check"><input name="copyOnSelect" type="checkbox"> Copy selected text automatically</label>
+    <div class="actions"><button type="button" id="reset">Reset to defaults</button><span id="status" role="status"></span></div>
+  </form>
+  <h2>Shortcuts</h2>
+  <table>
+    <tr><td><kbd>Alt+Shift+P</kbd></td><td>New terminal tab (change it in the browser's extension shortcuts page)</td></tr>
+    <tr><td><kbd>Ctrl+C</kbd> / <kbd>Ctrl+V</kbd></td><td>Copy selection / paste; right-click does either</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F</kbd></td><td>Find in scrollback</td></tr>
+    <tr><td><kbd>Ctrl+Shift+M</kbd></td><td>Render selected output as Markdown with LaTeX</td></tr>
+    <tr><td><kbd>Ctrl</kbd>+click</td><td>Open a link</td></tr>
+  </table>
+</main>
+<script src="settings.js"></script><script src="options.js"></script>
+</body></html>

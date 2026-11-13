@@ -1,0 +1,7 @@
+node_modules/
+
+# created on each machine
+server/.token
+server/allowed-origins.txt
+host/com.okan.pstab*.json
+*.log

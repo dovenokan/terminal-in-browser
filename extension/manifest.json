@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "PowerShell in a Tab",
+  "version": "1.2.0",
+  "description": "Open a PowerShell terminal in a browser tab (needs the local bridge server).",
+  "minimum_chrome_version": "123",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "nativeMessaging",
+    "contextMenus",
+    "clipboardRead",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "ws://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "action": {
+    "default_title": "Open PowerShell (right-click for other shells)"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+P"
+      },
+      "description": "Open a terminal tab"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ws://127.0.0.1:7681; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "pstab@okan.local",
+      "strict_min_version": "128.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmeFmJFuEMH81to+CKiYpNk71kFvIIB7uZfDSSq1lfvch5Hk/2nUNPXYe7XiQjyWCxtop+WZXhz4dXAo5MW4BOgRolh6CT7y2mNpTkU+TEdXcjSKUb1ldRBcd6eO/ul6DeMlU1B/E44uONxbKVZtbO8OoXMOXz+HNC5m66y6wSpsfhzRKx9EEwMaXmFvfoBN3gZdA+vBhGjrBfl2p+NSBdqOR/Xt98tTSttCFuDL6CT13Tz+vXbztXAbNKxoNos8Ticg+25v0aiE2002oMG7gKP+CEcmjHIlBTYp5LQOfjHm55hvMtIvk1MXO2vFU72TNOV99VttjZksQNrQj70tcewIDAQAB"
+}
