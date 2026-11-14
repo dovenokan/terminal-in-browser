@@ -1,9 +1,0 @@
-{
-    "path":  "C:\\Users\\okany\\OneDrive\\Documents\\GitHub\\boilerplates\\projects\\browser-extensions\\terminal-in-browser\\host\\host.bat",
-    "description":  "Starts the PowerShell-in-a-Tab bridge",
-    "name":  "com.okan.pstab",
-    "allowed_extensions":  [
-                               "pstab@okan.local"
-                           ],
-    "type":  "stdio"
-}

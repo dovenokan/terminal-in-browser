@@ -12,7 +12,7 @@ marked.use({
         const m = /^\$\$\s*\n?([\s\S]+?)\n?\$\$[ \t]*(?:\n+|$)/.exec(src);
         if (m) return { type: 'mathBlock', raw: m[0], text: m[1].trim() };
       },
-      renderer: (t) => katex.renderToString(t.text, { displayMode: true, throwOnError: false, output: 'htmlAndMathml' }),
+      renderer: (t) => katex.renderToString(t.text, { displayMode: true, throwOnError: false, trust: false, output: 'htmlAndMathml' }),
     },
     {
       name: 'mathInline', level: 'inline',
@@ -22,7 +22,7 @@ marked.use({
         const m = /^\$(?!\$)(?=[^\s$])((?:\\.|[^\\$\n])+?)(?<=[^\s\\])\$/.exec(src);
         if (m) return { type: 'mathInline', raw: m[0], text: m[1] };
       },
-      renderer: (t) => katex.renderToString(t.text, { displayMode: false, throwOnError: false, output: 'htmlAndMathml' }),
+      renderer: (t) => katex.renderToString(t.text, { displayMode: false, throwOnError: false, trust: false, output: 'htmlAndMathml' }),
     },
   ],
   gfm: true,
@@ -36,7 +36,10 @@ DOMPurify.addHook('afterSanitizeAttributes', (node) => {
 
 function renderMarkdown(text) {
   const html = marked.parse(text, { async: false });
-  return DOMPurify.sanitize(html, { USE_PROFILES: { html: true, mathMl: true } });
+  return DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true, mathMl: true },
+    FORBID_TAGS: ['style', 'form', 'input', 'textarea', 'select', 'button', 'iframe', 'object', 'embed'],
+  });
 }
 
 function decodeBase64Utf8(b64) {

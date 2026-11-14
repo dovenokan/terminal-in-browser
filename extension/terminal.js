@@ -5,7 +5,7 @@ const ACK_EVERY = 32 * 1024;                // flow control: ack processed outpu
 const params = new URLSearchParams(location.search);
 const SHELL = params.get('shell') || '';
 const CWD = params.get('cwd') || '';
-const TITLE = { pwsh: 'PowerShell 7', cmd: 'Command Prompt' }[SHELL] || 'Terminal';
+const TITLE = { pwsh: 'PowerShell 7', cmd: 'Command Prompt' }[SHELL] || 'PowerShell';
 const enc = new TextEncoder(), dec = new TextDecoder();
 const ctl = (m) => enc.encode(JSON.stringify(m));   // control messages travel as binary frames
 
@@ -21,7 +21,7 @@ const serializer = new SerializeAddon.SerializeAddon();
 term.loadAddon(fit);
 term.loadAddon(serializer);
 term.loadAddon(new WebLinksAddon.WebLinksAddon((e, uri) => {
-  if (e.ctrlKey || e.metaKey) window.open(uri, '_blank', 'noopener,noreferrer');   // Ctrl+click, like Windows Terminal
+  if ((e.ctrlKey || e.metaKey) && /^https?:\/\//i.test(uri)) window.open(uri, '_blank', 'noopener,noreferrer');   // Ctrl+click, like Windows Terminal
 }));
 term.open(el);
 try {
@@ -69,32 +69,28 @@ const onKeyOnce = (fn) => { const d = term.onData(() => { d.dispose(); fn(); });
 
 // --- token + bridge startup -----------------------------------------------------------------
 let memToken = '';   // survives a broken/unavailable storage area
+const tokenStore = api.storage && api.storage.session ? api.storage.session : null;
+try { api.storage && api.storage.local && api.storage.local.remove('token'); } catch {}
 async function storedToken() {
-  try { return (await api.storage.local.get('token')).token || memToken; } catch { return memToken; }
+  if (memToken) return memToken;
+  try { return tokenStore ? ((await tokenStore.get('token')).token || '') : ''; } catch { return ''; }
 }
 async function saveToken(token) {
   memToken = token;
-  try { await api.storage.local.set({ token }); } catch {}
+  if (tokenStore) try { await tokenStore.set({ token }); } catch {}
 }
 async function askToken() {
-  const token = (prompt('Paste the token printed by the bridge server (tray icon: right-click > Copy token):') || '').trim();
+  const token = (prompt('Paste the token from server/.token (tray icon: right-click > Copy token):') || '').trim();
   await saveToken(token);
   return token;
 }
 async function startServer() {
   // The native host starts the tray/bridge if needed, allows our origin and hands back the token.
   try {
-    const r = await api.runtime.sendNativeMessage('com.local.terminal_in_browser', { cmd: 'start', origin: location.origin });
+    const r = await api.runtime.sendNativeMessage('com.pstab.bridge', { cmd: 'start', origin: location.origin });
     if (r && r.token) await saveToken(r.token);
   } catch {} // host not installed: fall back to a manually started server
 }
-const tokenFromHash = (async () => {   // the tray passes the token in the URL fragment
-  if (location.hash.length > 1) {
-    const token = decodeURIComponent(location.hash.slice(1));
-    history.replaceState(null, '', location.pathname + location.search);
-    await saveToken(token);
-  }
-})();
 
 // --- connection -----------------------------------------------------------------------------
 let attempts = 0;
@@ -143,9 +139,14 @@ async function connect(viaHost = false) {
     }
     switch (e.code) {
       case 4401:   // stale token: ask the native host for the current one before bothering the user
+        memToken = '';
         if (!viaHost) return connect(true);
         note('bad token; press any key to paste the current one');
         return onKeyOnce(() => askToken().then(() => connect()));
+      case 4403:
+        forget();
+        note('session not owned by this origin; press any key for a new shell');
+        return onKeyOnce(() => connect());
       case 4409:
         note('this session was opened in another tab; press any key to take it back');
         return onKeyOnce(() => connect());
@@ -169,7 +170,7 @@ async function connect(viaHost = false) {
     onKeyOnce(() => connect(true));
   };
 }
-Promise.all([tokenFromHash, settingsReady]).then(() => connect());   // settings first: they decide cols/rows
+settingsReady.then(() => connect());   // settings first: they decide cols/rows
 
 // --- clipboard: Ctrl+C copies a selection, Ctrl+V pastes, right-click copies or pastes ------------
 const copy = (text) => navigator.clipboard.writeText(text).catch(() => {});

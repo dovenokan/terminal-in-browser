@@ -1,4 +1,4 @@
-# terminal-in-browser
+# Terminal in Browser
 
 Run a real local terminal directly inside a browser tab.
 

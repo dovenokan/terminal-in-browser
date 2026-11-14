@@ -28,7 +28,7 @@ function open(shell, tab) {
 
 async function buildMenu() {
   let available = null;
-  try { available = (await api.runtime.sendNativeMessage('com.local.terminal_in_browser', { cmd: 'shells' })).shells; } catch {} // no host: offer all
+  try { available = (await api.runtime.sendNativeMessage('com.pstab.bridge', { cmd: 'shells' })).shells; } catch {} // no host: offer all
   await api.contextMenus.removeAll();
   for (const [id, title] of Object.entries(SHELLS)) {
     if (!available || available[id] !== false) api.contextMenus.create({ id, title, contexts: ['action'] });

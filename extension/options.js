@@ -25,7 +25,9 @@ function preview(s) {
   const t = themeFor(s.theme, '');
   const box = document.getElementById('preview'), sample = document.getElementById('sample');
   box.style.background = t.background;
-  sample.style.cssText = `color:${t.foreground};font-family:${s.fontFamily};font-size:${s.fontSize}px`;
+  sample.style.color = t.foreground;
+  sample.style.fontFamily = s.fontFamily;
+  sample.style.fontSize = `${s.fontSize}px`;
   sample.querySelector('b').style.color = t.yellow;
   sample.querySelector('i').style.color = t.brightBlack;
   document.getElementById('chips').replaceChildren(...PALETTE.map((c) => {

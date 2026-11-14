@@ -1,0 +1,9 @@
+{
+    "path":  "C:\\Users\\okany\\OneDrive\\Documents\\GitHub\\terminal-in-browser\\host\\host.bat",
+    "description":  "Starts the terminal-in-browser bridge",
+    "name":  "com.local.terminal_in_browser",
+    "allowed_origins":  [
+                            "chrome-extension://dngngknlkbcklaaladkapmomknmehfin/"
+                        ],
+    "type":  "stdio"
+}
