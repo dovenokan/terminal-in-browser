@@ -1,6 +1,6 @@
-# PowerShell in a Tab
+# terminal-in-browser
 
-Run a real local PowerShell terminal directly inside a browser tab.
+Run a real local terminal directly inside a browser tab.
 
 ## Supported Operating Systems
 
@@ -36,7 +36,7 @@ Run a real local PowerShell terminal directly inside a browser tab.
    ```powershell
    powershell -ExecutionPolicy Bypass -File host\install.ps1
    ```
-   Reload the extension afterwards. Alternatively, double-click `PowerShell Tray.bat` to run the bridge from the system tray without registering the native host.
+   Reload the extension afterwards. Alternatively, double-click `Terminal Tray.bat` to run the bridge from the system tray without registering the native host.
 
 ## Usage
 

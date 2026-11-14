@@ -1,4 +1,4 @@
-# Renders Markdown (with $math$ and $$display$$) in the PowerShell in a Tab terminal.
+# Renders Markdown (with $math$ and $$display$$) in the terminal-in-browser terminal.
 # Usage:  render-md.ps1 notes.md        or        Get-Content notes.md -Raw | render-md.ps1
 # Works only inside a terminal tab from the extension; elsewhere it just prints a stray escape code.
 param([string]$Path)

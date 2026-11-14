@@ -6,7 +6,7 @@ const { spawn } = require('child_process');
 
 const serverDir = path.join(__dirname, '..', 'server');
 const PORT = 7681;
-const FIREFOX_ID = 'pstab@okan.local';
+const FIREFOX_ID = 'terminal-in-browser@local.addon';
 // Chromium passes the caller origin ("chrome-extension://<id>/"); Firefox passes [manifest path, add-on id].
 const caller = process.argv.slice(2);
 

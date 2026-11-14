@@ -1,8 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "PowerShell in a Tab",
+  "name": "terminal-in-browser",
   "version": "1.2.0",
-  "description": "Open a PowerShell terminal in a browser tab (needs the local bridge server).",
+  "description": "Open a terminal in a browser tab (needs the local bridge server).",
+  "icons": {
+    "16": "assets/logo.png",
+    "32": "assets/logo.png",
+    "48": "assets/logo.png",
+    "128": "assets/logo.png"
+  },
   "minimum_chrome_version": "123",
   "permissions": [
     "activeTab",
@@ -22,7 +28,13 @@
     ]
   },
   "action": {
-    "default_title": "Open PowerShell (right-click for other shells)"
+    "default_icon": {
+      "16": "assets/logo.png",
+      "32": "assets/logo.png",
+      "48": "assets/logo.png",
+      "128": "assets/logo.png"
+    },
+    "default_title": "Open Terminal (right-click for other shells)"
   },
   "options_ui": {
     "page": "options.html",
@@ -41,7 +53,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "pstab@okan.local",
+      "id": "terminal-in-browser@local.addon",
       "strict_min_version": "128.0",
       "data_collection_permissions": {
         "required": [

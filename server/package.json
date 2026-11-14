@@ -1,8 +1,8 @@
 {
-  "name": "pstab-bridge",
+  "name": "terminal-in-browser-bridge",
   "version": "1.1.0",
   "private": true,
-  "description": "Local PTY bridge for the PowerShell in a Tab extension",
+  "description": "Local PTY bridge for the terminal-in-browser extension",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

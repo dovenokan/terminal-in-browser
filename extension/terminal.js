@@ -5,7 +5,7 @@ const ACK_EVERY = 32 * 1024;                // flow control: ack processed outpu
 const params = new URLSearchParams(location.search);
 const SHELL = params.get('shell') || '';
 const CWD = params.get('cwd') || '';
-const TITLE = { pwsh: 'PowerShell 7', cmd: 'Command Prompt' }[SHELL] || 'PowerShell';
+const TITLE = { pwsh: 'PowerShell 7', cmd: 'Command Prompt' }[SHELL] || 'Terminal';
 const enc = new TextEncoder(), dec = new TextDecoder();
 const ctl = (m) => enc.encode(JSON.stringify(m));   // control messages travel as binary frames
 
@@ -84,7 +84,7 @@ async function askToken() {
 async function startServer() {
   // The native host starts the tray/bridge if needed, allows our origin and hands back the token.
   try {
-    const r = await api.runtime.sendNativeMessage('com.okan.pstab', { cmd: 'start', origin: location.origin });
+    const r = await api.runtime.sendNativeMessage('com.local.terminal_in_browser', { cmd: 'start', origin: location.origin });
     if (r && r.token) await saveToken(r.token);
   } catch {} // host not installed: fall back to a manually started server
 }

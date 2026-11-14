@@ -3,7 +3,7 @@ Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 $root = $PSScriptRoot
 $extId = (Get-Content "$root\extension-id.txt").Trim()
 
-$mutex = New-Object Threading.Mutex($false, 'Global\PsInTabTray')
+$mutex = New-Object Threading.Mutex($false, 'Global\TerminalInBrowserTray')
 if (-not $mutex.WaitOne(0)) { exit }   # already running
 
 function Server-Pid { (Get-NetTCPConnection -LocalPort 7681 -State Listen -ErrorAction SilentlyContinue | select -First 1).OwningProcess }
@@ -34,17 +34,18 @@ function Find-Browser {
 }
 
 $ni = New-Object Windows.Forms.NotifyIcon
-$ni.Icon = [Drawing.SystemIcons]::Application
-$ni.Text = 'PowerShell in a Tab'
+$logo = "$root\extension\assets\logo.png"
+$ni.Icon = if (Test-Path $logo) { [Drawing.Icon]::FromHandle(([Drawing.Bitmap]::FromFile($logo)).GetHicon()) } else { [Drawing.SystemIcons]::Application }
+$ni.Text = 'terminal-in-browser'
 $menu = New-Object Windows.Forms.ContextMenuStrip
 $menu.Items.Add('Open terminal tab').add_Click({ Open-Term }) | Out-Null
 $menu.Items.Add('Copy token').add_Click({ [Windows.Forms.Clipboard]::SetText((Token)) }) | Out-Null
 $runKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
 $auto = New-Object Windows.Forms.ToolStripMenuItem 'Start with Windows'
-$auto.Checked = [bool](Get-ItemProperty $runKey -Name PsInTab -ErrorAction SilentlyContinue)
+$auto.Checked = [bool](Get-ItemProperty $runKey -Name TerminalInBrowser -ErrorAction SilentlyContinue)
 $auto.add_Click({
-  if ($auto.Checked) { Remove-ItemProperty $runKey -Name PsInTab -ErrorAction SilentlyContinue; $auto.Checked = $false }
-  else { Set-ItemProperty $runKey -Name PsInTab -Value "wscript.exe `"$root\launch.vbs`""; $auto.Checked = $true }
+  if ($auto.Checked) { Remove-ItemProperty $runKey -Name TerminalInBrowser -ErrorAction SilentlyContinue; $auto.Checked = $false }
+  else { Set-ItemProperty $runKey -Name TerminalInBrowser -Value "wscript.exe `"$root\launch.vbs`""; $auto.Checked = $true }
 })
 $menu.Items.Add($auto) | Out-Null
 $menu.Items.Add('Quit').add_Click({

@@ -11,15 +11,15 @@ const path = require('path');
 const os = require('os');
 
 const PORT = Number(process.env.PORT || 7681);
-const GRACE_MS = Number(process.env.PSTAB_GRACE_MS || 60000);
+const GRACE_MS = Number(process.env.TERMINAL_GRACE_MS || 60000);
 const SHELLS = {
   powershell: [process.env.SHELL_EXE || 'powershell.exe', ['-NoLogo']],
   pwsh: ['pwsh.exe', ['-NoLogo']],
   cmd: ['cmd.exe', []],
 };
-// Bundled OpenConsole (newer than the inbox conhost: faster, better VT support, clean kill). PSTAB_CONPTY_DLL=0 opts out.
+// Bundled OpenConsole (newer than the inbox conhost: faster, better VT support, clean kill). TERMINAL_CONPTY_DLL=0 opts out.
 // It's missing when npm skipped node-pty's install scripts; then we fall back to the inbox conhost.
-let conptyDll = process.env.PSTAB_CONPTY_DLL !== '0';
+let conptyDll = process.env.TERMINAL_CONPTY_DLL !== '0';
 function spawnPty(file, args, opts) {
   if (conptyDll) {
     try { return pty.spawn(file, args, { ...opts, useConptyDll: true }); } catch (e) {
@@ -52,14 +52,14 @@ const tokenOk = (t) => {
   return given.length === want.length && crypto.timingSafeEqual(given, want);
 };
 
-// Allowed origins: our pinned Chromium ID, plus any recorded by the native host (Firefox's per-install UUID) or PSTAB_ORIGINS.
+// Allowed origins: our pinned Chromium ID, plus any recorded by the native host (Firefox's per-install UUID) or TERMINAL_ORIGINS.
 const originsFile = path.join(__dirname, 'allowed-origins.txt');
 let originsCache = { mtime: -1, set: new Set() };
 function allowedOrigins() {
   let mtime = 0;
   try { mtime = fs.statSync(originsFile).mtimeMs; } catch {}
   if (mtime !== originsCache.mtime) {
-    const list = (process.env.PSTAB_ORIGINS || '').split(',');
+    const list = (process.env.TERMINAL_ORIGINS || '').split(',');
     try { list.push('chrome-extension://' + fs.readFileSync(path.join(root, 'extension-id.txt'), 'utf8').trim()); } catch {}
     try { list.push(...fs.readFileSync(originsFile, 'utf8').split(/\r?\n/)); } catch {}
     originsCache = { mtime, set: new Set(list.map((o) => o.trim().replace(/\/$/, '')).filter(Boolean)) };
@@ -110,7 +110,7 @@ function spawnSession(m) {
   };
   s.pty = spawnPty(file, args, {
     name: 'xterm-256color', cols: dim(m.cols, 1000) || 80, rows: dim(m.rows, 500) || 24, cwd,
-    env: { ...process.env, COLORTERM: 'truecolor', TERM_PROGRAM: 'pstab' },
+    env: { ...process.env, COLORTERM: 'truecolor', TERM_PROGRAM: 'terminal-in-browser' },
   });
   s.pty.onData((d) => {
     if (!s.ws) { s.backlog.push(d); s.backlogLen += d.length; flowControl(s); return; }
@@ -182,5 +182,5 @@ wss.on('connection', (ws) => {
   ws.on('close', () => { clearTimeout(authTimer); if (s) detach(s, ws); });
 });
 
-console.log(`PowerShell bridge on ws://127.0.0.1:${PORT}`);
+console.log(`Terminal bridge on ws://127.0.0.1:${PORT}`);
 console.log(`Token (paste into the terminal tab once): ${token}`);
