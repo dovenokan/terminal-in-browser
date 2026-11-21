@@ -39,7 +39,7 @@ function Find-Browser {
 
 $ni = New-Object Windows.Forms.NotifyIcon
 $ni.Icon = [Drawing.SystemIcons]::Application
-$ni.Text = 'PowerShell in a Tab'
+$ni.Text = 'Terminal in Browser'
 $menu = New-Object Windows.Forms.ContextMenuStrip
 $menu.Items.Add('Open terminal tab').add_Click({ Open-Term }) | Out-Null
 $menu.Items.Add('Copy token').add_Click({ [Windows.Forms.Clipboard]::SetText((Token)) }) | Out-Null
